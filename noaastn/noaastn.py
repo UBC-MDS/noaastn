@@ -10,7 +10,7 @@ def get_data(station_number, year, path=None):
 
 def process_data(path=None):
     """Extracts and cleans a time series of air temperature, atmospheric pressure, wind speed, and wind
-    direction from raw data files and returns a dataframe.
+    direction from raw data file and returns a dataframe.
 
 
     Args:
