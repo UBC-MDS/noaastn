@@ -1,30 +1,33 @@
-# noaastn 
+# noaastn
 
 ![](https://github.com/UBC-MDS/noaastn/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/UBC-MDS/noaastn/branch/main/graph/badge.svg)](https://codecov.io/gh/UBC-MDS/noaastn) ![Release](https://github.com/UBC-MDS/noaastn/workflows/Release/badge.svg) [![Documentation Status](https://readthedocs.org/projects/noaastn/badge/?version=latest)](https://noaastn.readthedocs.io/en/latest/?badge=latest)
 
 Python package that downloads, processes and visualizes weather data from NOAA website.
 
-## Installation
-
-```bash
-$ pip install -i https://test.pypi.org/simple/ noaastn
-```
-
 ## Features
 
-- TODO
+- `get_data`:
+  - This function downloads and save the data from <ftp://ftp.ncei.noaa.gov/pub/data/noaa/> based on station number and year
 
 ## Dependencies
 
+[tool.poetry.dependencies]
+
+- python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+
+- pytest = "^6.2.2"
+- pytest-cov = "^2.11.1"
+- codecov = "^2.1.11"
+- python-semantic-release = "^7.15.0"
+- flake8 = "^3.8.4"
+- Sphinx = "^3.5.1"
+- sphinxcontrib-napoleon = "^0.7"
+
+## Related Packages
+
 - TODO
-
-## Usage
-
-- TODO
-
-## Documentation
-
-The official documentation is hosted on Read the Docs: https://noaastn.readthedocs.io/en/latest/
 
 ## Contributors
 
