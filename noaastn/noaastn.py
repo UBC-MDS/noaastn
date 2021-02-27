@@ -20,23 +20,45 @@ def get_stations_info(country="US", path=None):
     """
 
 
-def process_data(path=None):
+def get_weather_data(station_number, year, path=None):
     """
-    Extracts and cleans a time series of air temperature, atmospheric pressure,
-    wind speed, and wind direction from raw data file and returns a dataframe.
+    Download and clean weather data for a given NOAA station ID and year.
+    Returns a dataframe containing a time series of air temperature, atmospheric 
+    pressure, wind speed, and wind direction.  Also saves a copy of the raw data
+    file downloaded from the NOAA FTP server at
+    'ftp.ncei.noaa.gov/pub/data/noaa/'.
 
     Parameters
     ----------
+    station_number : str
+        NOAA station number.
+    year : int
+        Year for which weather data should be returned
     path : str, optional
-           The path of the directory where raw data file is saved. Defaults
-           value (None) assumes that the raw data is in the root of the
-           repository.
+        The path of the directory where raw data file is saved. Default value 
+        (None) saves the raw data to the root of the repository.
+    
+    Notes
+    -----
+        `station_number` is a combination of the USAF station ID and the NCDC 
+        WBAN number in the form '<USAF ID>-<WBAN ID>'.  If a WBAN ID does not 
+        exist, a value of '99999' should be used in its place.
+        Example with WBAN ID - '911650-22536'
+        Example without WBAN ID - '010015-99999'
 
+        Station numbers can be found station number in the dataframe returned 
+        by `get_stations_info()` or through the NOAA's graphical tool at 
+        https://gis.ncdc.noaa.gov/maps/ncei/cdo/hourly
+        
     Returns
     -------
     observations_df : pandas.core.frame.DataFrame
-                      Dataframe containing a time series of weather station
-                      observations
+        Dataframe containing a time series of weather station observations.
+
+    Examples
+    --------
+    >>> get_weather_data('911650-22536', 2020)
+
     """
 
 
