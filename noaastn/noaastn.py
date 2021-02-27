@@ -1,5 +1,6 @@
 def get_stations_info(country="US", path=None):
-    """Downloads and cleans the data of all stations available at
+    """
+    Downloads and cleans the data of all stations available at
     'ftp://ftp.ncei.noaa.gov/pub/data/noaa/'.
 
     Parameters
@@ -24,9 +25,9 @@ def get_stations_info(country="US", path=None):
 
 def get_weather_data(station_number, year, path=None):
     """
-    Download and clean weather data for a given NOAA station ID and year.
+    Loads and cleans weather data for a given NOAA station ID and year.
     Returns a dataframe containing a time series of air temperature,
-    atmospheric pressure, wind speed, and wind direction.  Also saves a copy of
+    atmospheric pressure, wind speed, and wind direction. Also saves a copy of
     the raw data file downloaded from the NOAA FTP server at
     'ftp.ncei.noaa.gov/pub/data/noaa/'.
 
@@ -38,7 +39,7 @@ def get_weather_data(station_number, year, path=None):
         Year for which weather data should be returned
     path : str, optional
         The path of the directory where raw data file is saved. Default value
-        (None) saves the raw data to the root of the repository.
+        (None) that does not save the raw data.
 
     Notes
     -----
@@ -48,31 +49,32 @@ def get_weather_data(station_number, year, path=None):
         Example with WBAN ID - '911650-22536'
         Example without WBAN ID - '010015-99999'
 
-        Station numbers can be found station number in the dataframe returned
-        by `get_stations_info()` or through the NOAA's graphical tool at
+        Station numbers can be found in the dataframe returned by
+        `get_stations_info()` or through the NOAA's graphical tool at
         https://gis.ncdc.noaa.gov/maps/ncei/cdo/hourly
 
     Returns
     -------
-    observations_df : pandas.core.frame.DataFrame
-        Dataframe containing a time series of weather station observations.
+    observations_df : pandas.DataFrame
+        A dataframe that contains a time series of weather station
+        observations.
 
     Examples
     --------
     >>> get_weather_data('911650-22536', 2020)
-
     """
 
 
 def plot_weather_data(observations_df, y_axis, time_basis):
-    """Visualize the weather station observations including air temperature,
-    atmospheric pressure, wind speed, and wind direction changing with time
-    and return a line plot.
+    """
+    Visualizes the weather station observations including air temperature,
+    atmospheric pressure, wind speed, and wind direction changing over time.
 
     Parameters
     ----------
-    observations_df : pandas.core.frame.DataFrame
-        Dataframe containing a time series of weather station observations.
+    observations_df : pandas.DataFrame
+        A dataframe that contains a time series of weather station
+        observations.
     y_axis : str
         Variables that users would like to plot on a timely basis.
     time_basis : str
@@ -82,10 +84,10 @@ def plot_weather_data(observations_df, y_axis, time_basis):
     Returns
     -------
     plot : `altair`
-        A line plot that visualizes the changing of observation user chooses
-        on the timely basis.
+        A plot can visualize the changing of observation on the timely basis
+        that user chooses.
 
     Examples
     --------
-    >>> plot_data(observations_df, y_axis = airtemp, time_basis = monthly)
+    >>> plot_weather_data(observations_df, y_axis=airtemp, time_basis=monthly)
     """
