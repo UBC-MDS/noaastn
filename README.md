@@ -6,13 +6,16 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 - Air Temperature (degrees Celsius)
 - Atmospheric Pressure (hectopascals)
 - Wind Speed (m/s)
-- Wind direction (angular degrees)
+- Wind Direction (angular degrees)
+
 ## Features
 
 - `get_data`:
   - This function downloads and save the data from <ftp://ftp.ncei.noaa.gov/pub/data/noaa/> based on station number and year
 - `process_data`:
-  - Extracts and cleans a time series of air temperature, atmospheric pressure, wind speed, and wind direction from raw data file and returns a dataframe.
+  - This function extracts and cleans a time series of air temperature, atmospheric pressure, wind speed, and wind direction from raw data file and returns a dataframe.
+- `plot_data`:
+  - This function visualizes the weather station observations including air temperature, atmospheric pressure, wind speed, and wind direction changing with time and returns a line plot.
 
 ## Dependencies
 
