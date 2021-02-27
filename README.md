@@ -13,8 +13,8 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 
 - `get_stations_info`:
   - This function downloads and cleans the data of all stations available at <ftp://ftp.ncei.noaa.gov/pub/data/noaa/>
-- `process_data`:
-  - This function extracts and cleans a time series of air temperature, atmospheric pressure, wind speed, and wind direction from raw data file and returns a dataframe.
+- `get_weather_data`:
+  - Download and clean weather data for a given NOAA station ID and year. Returns a dataframe containing a time series of air temperature,atmospheric pressure, wind speed, and wind direction.
 - `plot_weather_data`:
   - This function visualizes the weather station observations including air temperature, atmospheric pressure, wind speed, and wind direction changing with time and returns a line plot.
 
@@ -36,7 +36,7 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 
 ## Related Packages
 
-  There are few packages in the python ecosystem like [noaa](https://pypi.org/project/noaa/), [noaa-coops](https://pypi.org/project/noaa-coops/), [noaa-sdk](https://pypi.org/project/noaa-sdk/) that does analysis related to the NOAA station data. However, the tools are more focused on using [API service](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) for getting the forecast information and does not use similar method to get the historical weather data related to a particular station.
+  There are few packages in the python ecosystem like [noaa](https://pypi.org/project/noaa/), [noaa-coops](https://pypi.org/project/noaa-coops/), [noaa-sdk](https://pypi.org/project/noaa-sdk/) that do analysis related to NOAA weather station data. These tools are more focused on using the NOAA's [API service](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) to obtain forecast information.  They do not provide an interface to obtain historical weather data from the NOAA's FTP site.
 
 ## Contributors
 
