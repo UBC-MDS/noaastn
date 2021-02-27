@@ -56,7 +56,8 @@ def get_weather_data(station_number, year, path=None):
     Returns
     -------
     observations_df : pandas.DataFrame
-        A dataframe that contains a time series of weather station observations.
+        A dataframe that contains a time series of weather station
+        observations.
 
     Examples
     --------
@@ -72,7 +73,8 @@ def plot_weather_data(observations_df, y_axis, time_basis):
     Parameters
     ----------
     observations_df : pandas.DataFrame
-        A dataframe contains a time series of weather station observations.
+        A dataframe that contains a time series of weather station
+        observations.
     y_axis : str
         Variables that users would like to plot on a timely basis.
     time_basis : str
