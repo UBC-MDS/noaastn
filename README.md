@@ -36,7 +36,7 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 
 ## Related Packages
 
-  There are few packages in the python ecosystem like [noaa](https://pypi.org/project/noaa/), [noaa-coops](https://pypi.org/project/noaa-coops/), [noaa-sdk](https://pypi.org/project/noaa-sdk/) that provides data related to the NOAA station. However, the tools are more focused on using [API service](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) for getting the forecast information and does not use similar method to get the historical weather data related to a particular station.
+  There are few packages in the python ecosystem like [noaa](https://pypi.org/project/noaa/), [noaa-coops](https://pypi.org/project/noaa-coops/), [noaa-sdk](https://pypi.org/project/noaa-sdk/) that does analysis related to the NOAA station data. However, the tools are more focused on using [API service](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) for getting the forecast information and does not use similar method to get the historical weather data related to a particular station.
 
 ## Contributors
 
