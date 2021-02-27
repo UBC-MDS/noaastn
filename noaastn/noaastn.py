@@ -1,24 +1,22 @@
-import numpy as np
-import pandas as pd
-import altair as alt
-
-
-def get_data(station_number, year, path=None):
-    """
-    Download and save the data from ftp://ftp.ncei.noaa.gov/pub/data/noaa/
-    based on station number and year.
+def get_stations_info(country="US", path=None):
+    """Downloads and cleans the data of all stations available at ftp://ftp.ncei.noaa.gov/pub/data/noaa/
 
     Parameters
     ----------
-    station_number : str
-                     The station number. for example: '010015-99999'
-                     represents BRINGELAND
-    year : int
-           The year of the data collected at the station
+    country : str, optional
+              Filters station information by country location that is represented by two character country code or "all" for every country, by default "US"
     path : str, optional
-           path of the directory to save the data file. for example:
-           "home/project/", defaults to None that is root location of
-           the repository
+           path of the directory to save the data file. for example: "home/project/",
+           defaults to None that does not save the file.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Data frame containing information of all stations
+
+    Examples
+    --------
+    >>> get_stations_info(country="US", path="home/project/")
     """
 
 
@@ -41,10 +39,8 @@ def process_data(path=None):
                       observations
     """
 
-    return observations_df
 
-
-def plot_data(observations_df, y_axis, time_basis):
+def plot_weather_data(observations_df, y_axis, time_basis):
     """Visualize the weather station observations including air temperature,
     atmospheric pressure, wind speed, and wind direction changing with time
     and return a line plot.
@@ -64,9 +60,9 @@ def plot_data(observations_df, y_axis, time_basis):
     -------
     plot : `altair`
            A line plot that visualizes the changing of observation user
-           chooses on the timly basis
+           chooses on the timely basis
 
     Examples
     --------
-    >>> plot_data(observations_df, y_axis = airtemp, time_basis = montly)
+    >>> plot_data(observations_df, y_axis = airtemp, time_basis = monthly)
     """
