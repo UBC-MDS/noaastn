@@ -2,7 +2,7 @@
 
 ![](https://github.com/UBC-MDS/noaastn/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/UBC-MDS/noaastn/branch/main/graph/badge.svg)](https://codecov.io/gh/UBC-MDS/noaastn) ![Release](https://github.com/UBC-MDS/noaastn/workflows/Release/badge.svg) [![Documentation Status](https://readthedocs.org/projects/noaastn/badge/?version=latest)](https://noaastn.readthedocs.io/en/latest/?badge=latest)
 
-The US National Oceanic and Atmospheric Administration (NOAA) collects and provides access to weather data from land-based weather stations within the US and around the world ([link](https://www.ncdc.noaa.gov/data-access/land-based-station-data)).  One method for accessing these data is through a publically accessible FTP site.  This package allows users to easily download data from a given station for a given year, extract several key weather parameters from the raw data files, and visualize the variation in these parameters over time.  The weather parameters that are extracted with this package are:
+The US National Oceanic and Atmospheric Administration (NOAA) collects and provides access to weather data from land-based weather stations within the US and around the world ([Land-Based Station Data](https://www.ncdc.noaa.gov/data-access/land-based-station-data)).  One method for accessing these data is through a publically accessible FTP site.  This package allows users to easily download data from a given station for a given year, extract several key weather parameters from the raw data files, and visualize the variation in these parameters over time.  The weather parameters that are extracted with this package are:
 
 - Air Temperature (degrees Celsius)
 - Atmospheric Pressure (hectopascals)
@@ -14,9 +14,9 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 - `get_stations_info`:
   - This function downloads and cleans the data of all stations available at <ftp://ftp.ncei.noaa.gov/pub/data/noaa/>
 - `get_weather_data`:
-  - Download and clean weather data for a given NOAA station ID and year. Returns a dataframe containing a time series of air temperature,atmospheric pressure, wind speed, and wind direction.
+  - This function loads and cleans weather data for a given NOAA station ID and year. It returns a dataframe containing a time series of air temperature, atmospheric pressure, wind speed, and wind direction.
 - `plot_weather_data`:
-  - This function visualizes the weather station observations including air temperature, atmospheric pressure, wind speed, and wind direction changing with time and returns a line plot.
+  - This function visualizes the weather station observations including air temperature, atmospheric pressure, wind speed, and wind direction changing over time.
 
 ## Dependencies
 
@@ -36,7 +36,7 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 
 ## Related Packages
 
-  There are few packages in the python ecosystem like [noaa](https://pypi.org/project/noaa/), [noaa-coops](https://pypi.org/project/noaa-coops/), [noaa-sdk](https://pypi.org/project/noaa-sdk/) that do analysis related to NOAA weather station data. These tools are more focused on using the NOAA's [API service](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) to obtain forecast information.  They do not provide an interface to obtain historical weather data from the NOAA's FTP site.
+  There are few packages in the python ecosystem like [noaa](https://pypi.org/project/noaa/), [noaa-coops](https://pypi.org/project/noaa-coops/), [noaa-sdk](https://pypi.org/project/noaa-sdk/) that do analysis related to NOAA weather station data. These tools are more focused on using the NOAA's [API service](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) to obtain forecast information. They do not provide an interface to obtain historical weather data from the NOAA's FTP site, process and visualize key weather parameters like this package do.
 
 ## Contributors
 
