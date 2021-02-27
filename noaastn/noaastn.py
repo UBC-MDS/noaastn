@@ -56,7 +56,7 @@ def get_weather_data(station_number, year, path=None):
     Returns
     -------
     observations_df : pandas.DataFrame
-        Dataframe containing a time series of weather station observations.
+        A dataframe that contains a time series of weather station observations.
 
     Examples
     --------
@@ -66,7 +66,7 @@ def get_weather_data(station_number, year, path=None):
 
 def plot_weather_data(observations_df, y_axis, time_basis):
     """
-    Visualize the weather station observations including air temperature,
+    Visualizes the weather station observations including air temperature,
     atmospheric pressure, wind speed, and wind direction changing over time.
 
     Parameters
@@ -87,5 +87,5 @@ def plot_weather_data(observations_df, y_axis, time_basis):
 
     Examples
     --------
-    >>> plot_data(observations_df, y_axis=airtemp, time_basis=monthly)
+    >>> plot_weather_data(observations_df, y_axis=airtemp, time_basis=monthly)
     """
