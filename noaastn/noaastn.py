@@ -1,3 +1,10 @@
+from ftplib import FTP
+import gzip
+import io
+import pandas as pd
+import numpy as np
+
+
 def get_stations_info(country="US", path=None):
     """
     Downloads and cleans the data of all stations available at
@@ -23,13 +30,13 @@ def get_stations_info(country="US", path=None):
     """
 
 
-def get_weather_data(station_number, year, path=None):
+def get_weather_data(station_number, year):
     """
     Loads and cleans weather data for a given NOAA station ID and year.
-    Returns a dataframe containing a time series of air temperature,
-    atmospheric pressure, wind speed, and wind direction. Also saves a copy of
-    the raw data file downloaded from the NOAA FTP server at
-    'ftp.ncei.noaa.gov/pub/data/noaa/'.
+    Returns a dataframe containing a time series of air temperature (degrees
+    Celsius), atmospheric pressure (hectopascals), wind speed (m/s), and wind
+    direction (angular degrees). Also saves a copy of the raw data file
+    downloaded from the NOAA FTP server at 'ftp.ncei.noaa.gov/pub/data/noaa/'.
 
     Parameters
     ----------
@@ -37,9 +44,6 @@ def get_weather_data(station_number, year, path=None):
         NOAA station number.
     year : int
         Year for which weather data should be returned
-    path : str, optional
-        The path of the directory where raw data file is saved. Default value
-        (None) that does not save the raw data.
 
     Notes
     -----
@@ -63,6 +67,39 @@ def get_weather_data(station_number, year, path=None):
     --------
     >>> get_weather_data('911650-22536', 2020)
     """
+    # Generate filename based on selected station number and year and download
+    # data from NOAA FTP site.
+    filename = station_number + "-" + str(year) + ".gz"
+
+    noaa_ftp = FTP("ftp.ncei.noaa.gov")
+    noaa_ftp.login()  # Log in (no user name or password required)
+    noaa_ftp.cwd("pub/data/noaa/" + str(year) + "/")
+
+    compressed_data = io.BytesIO()
+    noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
+
+    noaa_ftp.quit()
+
+    # Unzip and process data line by line and extract variables of interest
+    # The raw data file format is described here:
+    # ftp://ftp.ncei.noaa.gov/pub/data/noaa/isd-format-document.pdf
+    compressed_data.seek(0)
+    stn_year_df = pd.DataFrame(
+        columns=["stn", "datetime", "air_temp", "atm_press", "wind_spd", "wind_dir"]
+    )
+    with gzip.open(compressed_data, mode="rt") as stn_data:
+        for i, line in enumerate(stn_data):
+            stn_year_df.loc[i, "datetime"] = pd.to_datetime(line[15:27])
+            stn_year_df.loc[i, "air_temp"] = float(line[87:92]) / 10
+            stn_year_df.loc[i, "atm_press"] = float(line[99:104]) / 10
+            stn_year_df.loc[i, "wind_spd"] = float(line[65:69]) / 10
+            stn_year_df.loc[i, "wind_dir"] = float(line[60:63])
+
+    # Replace missing value indicators with NaNs
+    stn_year_df = stn_year_df.replace([999, 999.9, 9999.9], [np.nan, np.nan, np.nan])
+
+    stn_year_df.loc[:, "stn"] = station_number
+    return stn_year_df
 
 
 def plot_weather_data(observations_df, y_axis, time_basis):
