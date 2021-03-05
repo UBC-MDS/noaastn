@@ -3,6 +3,7 @@ import gzip
 import io
 import pandas as pd
 import numpy as np
+import re
 
 
 def get_stations_info(country="US", path=None):
@@ -67,6 +68,13 @@ def get_weather_data(station_number, year):
     --------
     >>> get_weather_data('911650-22536', 2020)
     """
+    
+    assert type(year) == int, 'Year must be entered as an integer'
+    assert type(station_number) == str, 'Station number must be entered as a string'
+    assert re.match('^\d{6}[-]\d{5}$', station_number), 'Station number must be entered in form "911650-22536".  See documentation for additional details.'
+
+    
+    
     # Generate filename based on selected station number and year and download
     # data from NOAA FTP site.
     filename = station_number + "-" + str(year) + ".gz"
@@ -76,7 +84,15 @@ def get_weather_data(station_number, year):
     noaa_ftp.cwd("pub/data/noaa/" + str(year) + "/")
 
     compressed_data = io.BytesIO()
-    noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
+    
+    try:    
+        noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
+    except error_perm as e_mess:
+        if re.search('(No such file or directory)', str(e_mess)):
+            print('Data not available for that station number / year combination')
+        else:
+            print('Error generated from NOAA FTP site: \n')
+        noaa_ftp.quit()
 
     noaa_ftp.quit()
 
