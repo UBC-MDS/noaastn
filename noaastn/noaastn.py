@@ -1,12 +1,14 @@
-from ftplib import FTP
 import gzip
 import io
-import pandas as pd
-import numpy as np
+import os
 import re
+from ftplib import FTP
+
+import numpy as np
+import pandas as pd
 
 
-def get_stations_info(country="US", path=None):
+def get_stations_info(country="all"):
     """
     Downloads and cleans the data of all stations available at
     'ftp://ftp.ncei.noaa.gov/pub/data/noaa/'.
@@ -15,10 +17,7 @@ def get_stations_info(country="US", path=None):
     ----------
     country : str, optional
         Filters station information by country location that is represented by
-        two character country code or "all" for every country, by default "US".
-    path : str, optional
-        Path of the directory to save the data file. For example:
-        "home/project/", defaults to None that does not save the file.
+        two character country code("US") or "all" for every country, by default "all".
 
     Returns
     -------
@@ -27,8 +26,69 @@ def get_stations_info(country="US", path=None):
 
     Examples
     --------
-    >>> get_stations_info(country="US", path="home/project/")
+    >>> get_stations_info(country="US")
     """
+
+    # Get station info file from the ftp site
+    ftp_address = "ftp.ncei.noaa.gov"
+    ftp_dir = "pub/data/noaa/"
+    stn_history_file = "isd-history.txt"  # station information/history file.
+    columns = [
+        "usaf",
+        "wban",
+        "stn_name",
+        "country",
+        "state",
+        "call",
+        "lat",
+        "lon",
+        "elevation",
+        "start",
+        "end",
+    ]
+    col_index = [0, 7, 13, 43, 48, 51, 57, 65, 74, 82, 91, 101]
+    skip_lines = 21
+
+    # connect, login and change working directory to /pub/data/noaa/
+    noaa_ftp = FTP(ftp_address)
+    noaa_ftp.login()
+    noaa_ftp.cwd(ftp_dir)
+
+    # save file and quit
+    with open(stn_history_file, "wb+") as stn_hist:
+        noaa_ftp.retrbinary("RETR " + stn_history_file, stn_hist.write)
+    noaa_ftp.quit()
+
+    # create data_dic from the file
+    data = [[] for i in range(len(col_index) - 1)]
+    with open(stn_history_file, mode="rt") as stn_hist:
+        for i, line in enumerate(stn_hist):
+            if i <= skip_lines:
+                continue
+            for i in range(len(col_index) - 1):
+                val = line[col_index[i] : col_index[i + 1]].strip()
+                if len(val) > 0:
+                    data[i].append(line[col_index[i] : col_index[i + 1]].strip())
+                else:
+                    data[i].append(None)
+
+    os.remove("isd-history.txt")
+    data_dic = {columns[i]: data[i] for i in range(len(data))}
+    data_df = pd.DataFrame(data_dic)
+
+    # datatype conversion of the datetime column
+    data_df.start = pd.to_datetime(data_df.start)
+    data_df.end = pd.to_datetime(data_df.end)
+
+    # filter if the country parameter is valid
+    if country != "all":
+        print(len(country), len(country) != 2)
+        if len(country) != 2 or not isinstance(country, str):
+            raise Exception("Invalid country parameter")
+        else:
+            data_df = data_df[data_df["country"] == country]
+
+    return data_df
 
 
 def get_weather_data(station_number, year):
@@ -68,13 +128,12 @@ def get_weather_data(station_number, year):
     --------
     >>> get_weather_data('911650-22536', 2020)
     """
-    
+
     assert type(year) == int, 'Year must be entered as an integer'
     assert type(station_number) == str, 'Station number must be entered as a string'
     assert re.match('^\d{6}[-]\d{5}$', station_number), 'Station number must be entered in form "911650-22536".  See documentation for additional details.'
 
-    
-    
+
     # Generate filename based on selected station number and year and download
     # data from NOAA FTP site.
     filename = station_number + "-" + str(year) + ".gz"
@@ -84,8 +143,8 @@ def get_weather_data(station_number, year):
     noaa_ftp.cwd("pub/data/noaa/" + str(year) + "/")
 
     compressed_data = io.BytesIO()
-    
-    try:    
+
+    try:
         noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
     except error_perm as e_mess:
         if re.search('(No such file or directory)', str(e_mess)):
