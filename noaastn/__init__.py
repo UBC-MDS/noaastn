@@ -1,1 +1,1 @@
-__version__ = [C[D
+__version__ = "0.1.0"
