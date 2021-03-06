@@ -21,7 +21,7 @@ def test_get_stations_info(param, expected_output):
     is_datetime(data_all["start"])
     is_datetime(data_all["end"])
 
-    # check the number of columns and the number of countries in dataframe
+    # check the number of rows and the number of countries in dataframe
     assert data_all.shape[0] == expected_output[0]
     assert len(set(data_all["country"])) == expected_output[1]
 
