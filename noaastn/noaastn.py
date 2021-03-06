@@ -4,9 +4,9 @@ import os
 import re
 from ftplib import FTP
 
+import altair as alt
 import numpy as np
 import pandas as pd
-import altair as alt
 
 
 def get_stations_info(country="all"):
@@ -37,12 +37,12 @@ def get_stations_info(country="all"):
     columns = [
         "usaf",
         "wban",
-        "stn_name",
+        "station_name",
         "country",
         "state",
         "call",
-        "lat",
-        "lon",
+        "latitude",
+        "longitude",
         "elevation",
         "start",
         "end",
