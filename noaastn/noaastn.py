@@ -6,6 +6,7 @@ from ftplib import FTP
 
 import numpy as np
 import pandas as pd
+import altair as alt
 
 
 def get_stations_info(country="all"):
@@ -129,10 +130,11 @@ def get_weather_data(station_number, year):
     >>> get_weather_data('911650-22536', 2020)
     """
 
-    assert type(year) == int, 'Year must be entered as an integer'
-    assert type(station_number) == str, 'Station number must be entered as a string'
-    assert re.match('^\d{6}[-]\d{5}$', station_number), 'Station number must be entered in form "911650-22536".  See documentation for additional details.'
-
+    assert type(year) == int, "Year must be entered as an integer"
+    assert type(station_number) == str, "Station number must be entered as a string"
+    assert re.match(
+        "^\d{6}[-]\d{5}$", station_number
+    ), 'Station number must be entered in form "911650-22536".  See documentation for additional details.'
 
     # Generate filename based on selected station number and year and download
     # data from NOAA FTP site.
@@ -147,10 +149,10 @@ def get_weather_data(station_number, year):
     try:
         noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
     except error_perm as e_mess:
-        if re.search('(No such file or directory)', str(e_mess)):
-            print('Data not available for that station number / year combination')
+        if re.search("(No such file or directory)", str(e_mess)):
+            print("Data not available for that station number / year combination")
         else:
-            print('Error generated from NOAA FTP site: \n')
+            print("Error generated from NOAA FTP site: \n")
         noaa_ftp.quit()
 
     noaa_ftp.quit()
@@ -177,29 +179,159 @@ def get_weather_data(station_number, year):
     return stn_year_df
 
 
-def plot_weather_data(observations_df, y_axis, time_basis):
+def plot_weather_data(obs_df, col_name, time_basis):
     """
     Visualizes the weather station observations including air temperature,
     atmospheric pressure, wind speed, and wind direction changing over time.
-
     Parameters
     ----------
-    observations_df : pandas.DataFrame
+    obs_df : pandas.DataFrame
         A dataframe that contains a time series of weather station
         observations.
-    y_axis : str
-        Variables that users would like to plot on a timely basis.
+    col_name : str
+        Variables that users would like to plot on a timely basis,
+        including air_temp, atm_press, wind_spd, wind_dir
     time_basis : str
         The users can choose to plot the observations on yearly, monthly or
         daily basis
-
     Returns
     -------
     plot : `altair`
         A plot can visualize the changing of observation on the timely basis
         that user chooses.
-
     Examples
     --------
-    >>> plot_weather_data(observations_df, y_axis=airtemp, time_basis=monthly)
+    >>> plot_weather_data(obs_df, col_name="air_temp", time_basis="monthly")
     """
+
+    assert (
+        type(obs_df) == pd.core.frame.DataFrame
+    ), "Weather data should be a Pandas DataFrame."
+    assert type(col_name) == str, "Variable name must be entered as a string"
+    assert type(time_basis) == str, "Time basis must be entered as a string"
+
+    df = obs_df.dropna()
+    assert len(df.index) > 2, "Dataset is not sufficient to visualize"
+    year = df.datetime.dt.year[0]
+
+    if time_basis == "monthly":
+        df = df.set_index("datetime").resample("M").mean().reset_index()
+        assert len(df.index) > 2, "Dataset is not sufficient to visualize"
+
+        if col_name == "air_temp":
+            line = (
+                alt.Chart(df, title="Air Temperature for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X(
+                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                    ),
+                    alt.Y(
+                        "air_temp", title="Air Temperature", scale=alt.Scale(zero=False)
+                    ),
+                    alt.Tooltip(col_name),
+                )
+            )
+        elif col_name == "atm_press":
+            line = (
+                alt.Chart(df, title="Atmospheric Pressure for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X(
+                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                    ),
+                    alt.Y(
+                        "atm_press",
+                        title="Atmospheric Pressure",
+                        scale=alt.Scale(zero=False),
+                    ),
+                    alt.Tooltip(col_name),
+                )
+            )
+        elif col_name == "wind_spd":
+            line = (
+                alt.Chart(df, title="Wind Speed for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X(
+                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                    ),
+                    alt.Y("wind_spd", title="Wind Speed", scale=alt.Scale(zero=False)),
+                    alt.Tooltip(col_name),
+                )
+            )
+        else:
+            line = (
+                alt.Chart(df, title="Wind Direction for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X(
+                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                    ),
+                    alt.Y(
+                        "wind_dir", title="Wind Direction", scale=alt.Scale(zero=False)
+                    ),
+                    alt.Tooltip(col_name),
+                )
+            )
+
+    else:
+        df = df.set_index("datetime").resample("D").mean().reset_index()
+        assert len(df.index) > 2, "Dataset is not sufficient to visualize"
+
+        if col_name == "air_temp":
+            line = (
+                alt.Chart(df, title="Air Temperature for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.Y(
+                        "air_temp", title="Air Temperature", scale=alt.Scale(zero=False)
+                    ),
+                    alt.Tooltip(col_name),
+                )
+            )
+        elif col_name == "atm_press":
+            line = (
+                alt.Chart(df, title="Atmospheric Pressure for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.Y(
+                        "atm_press",
+                        title="Atmospheric Pressure",
+                        scale=alt.Scale(zero=False),
+                    ),
+                    alt.Tooltip(col_name),
+                )
+            )
+        elif col_name == "wind_spd":
+            line = (
+                alt.Chart(df, title="Wind Speed for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.Y("wind_spd", title="Wind Speed", scale=alt.Scale(zero=False)),
+                    alt.Tooltip(col_name),
+                )
+            )
+        else:
+            line = (
+                alt.Chart(df, title="Wind Direction for " + str(year))
+                .mark_line(color="orange")
+                .encode(
+                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.Y(
+                        "wind_dir", title="Wind Direction", scale=alt.Scale(zero=False)
+                    ),
+                    alt.Tooltip(col_name),
+                )
+            )
+
+    chart = (
+        line.properties(width=500, height=350)
+        .configure_axis(labelFontSize=15, titleFontSize=20, grid=False)
+        .configure_title(fontSize=25)
+    )
+
+    return chart
