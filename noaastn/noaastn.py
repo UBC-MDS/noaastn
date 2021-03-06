@@ -133,7 +133,7 @@ def get_weather_data(station_number, year):
     assert type(year) == int, "Year must be entered as an integer"
     assert type(station_number) == str, "Station number must be entered as a string"
     assert re.match(
-        "^\d{6}[-]\d{5}$", station_number
+        "^[0-9]{6}[-][0-9]{5}$", station_number
     ), 'Station number must be entered in form "911650-22536".  See documentation for additional details.'
 
     # Generate filename based on selected station number and year and download
