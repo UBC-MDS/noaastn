@@ -190,10 +190,9 @@ def plot_weather_data(obs_df, col_name, time_basis):
         observations.
     col_name : str
         Variables that users would like to plot on a timely basis,
-        including air_temp, atm_press, wind_spd, wind_dir
+        including 'air_temp', 'atm_press', 'wind_spd', 'wind_dir'
     time_basis : str
-        The users can choose to plot the observations on yearly, monthly or
-        daily basis
+        The users can choose to plot the observations on 'monthly' or 'daily basis'
     Returns
     -------
     plot : `altair`
