@@ -23,6 +23,8 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 [tool.poetry.dependencies]
 
 - python = "^3.8"
+- pandas = "^1.2.3"
+- altair = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 
