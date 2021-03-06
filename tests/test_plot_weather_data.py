@@ -30,6 +30,8 @@ plot_wd_d = noaastn.plot_weather_data(
 
 
 def test_plot_weather_data():
+
+    # Test mapped axis
     assert (
         plot_at_m.encoding.x.shorthand == "month(datetime)"
     ), "datetime should be mapped to the x axis"
@@ -60,8 +62,12 @@ def test_plot_weather_data():
     assert (
         plot_wd_d.encoding.y.shorthand == "wind_dir"
     ), "wind_dir should be mapped to the y axis"
+
+    # Test chart configurations
     assert plot_at_m.mark.type == "line", "mark should be a line"
     assert plot_at_m.mark.color == "orange", "mark color should be orange"
+
+    # Test axis configurations
     assert (
         plot_at_m.encoding.x.axis.labelAngle == -30
     ), "x axis label shoudl oriented to -30 degree"

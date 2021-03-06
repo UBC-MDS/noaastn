@@ -204,19 +204,32 @@ def plot_weather_data(obs_df, col_name, time_basis):
     >>> plot_weather_data(obs_df, col_name="air_temp", time_basis="monthly")
     """
 
+    # Test input types
     assert (
         type(obs_df) == pd.core.frame.DataFrame
     ), "Weather data should be a Pandas DataFrame."
     assert type(col_name) == str, "Variable name must be entered as a string"
     assert type(time_basis) == str, "Time basis must be entered as a string"
+    # Test edge cases
+    assert col_name in [
+        "air_temp",
+        "atm_press",
+        "wind_spd",
+        "wind_dir",
+    ], "Variable can only be one of air_temp, atm_press, wind_spd or wind_dir"
+    assert time_basis in ["monthly", "daily"], "Time basis can only be monthly or daily"
 
     df = obs_df.dropna()
-    assert len(df.index) > 2, "Dataset is not sufficient to visualize"
+    assert (
+        len(df.index) > 2
+    ), "Dataset is not sufficient to visualize"  # Test edge cases
     year = df.datetime.dt.year[0]
 
     if time_basis == "monthly":
         df = df.set_index("datetime").resample("M").mean().reset_index()
-        assert len(df.index) > 2, "Dataset is not sufficient to visualize"
+        assert (
+            len(df.index) > 2
+        ), "Dataset is not sufficient to visualize"  # Test edge cases
 
         if col_name == "air_temp":
             line = (
@@ -277,7 +290,9 @@ def plot_weather_data(obs_df, col_name, time_basis):
 
     else:
         df = df.set_index("datetime").resample("D").mean().reset_index()
-        assert len(df.index) > 2, "Dataset is not sufficient to visualize"
+        assert (
+            len(df.index) > 2
+        ), "Dataset is not sufficient to visualize"  # Test edge cases
 
         if col_name == "air_temp":
             line = (
