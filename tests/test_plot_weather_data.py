@@ -1,7 +1,7 @@
 from noaastn import noaastn
 
-station_number = "713930-99999"
-year = 2021
+station_number = "911650-22536"
+year = 2020
 weather_df = noaastn.get_weather_data(station_number, year)
 plot_at_m = noaastn.plot_weather_data(
     obs_df=weather_df, col_name="air_temp", time_basis="monthly"
@@ -71,3 +71,4 @@ def test_plot_weather_data():
     assert (
         plot_at_m.encoding.x.axis.labelAngle == -30
     ), "x axis label shoudl oriented to -30 degree"
+    assert plot_at_m.encoding.y.scale.zero == 0, "y axis should not start at 0"

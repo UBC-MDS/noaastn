@@ -13,7 +13,9 @@ def test_output_type():
 
 
 def test_output_shape():
-    assert weather_df.shape[0] == 6, "Test data should have 6 rows."
+    assert (
+        weather_df.shape[0] == 6
+    ), "Test data should have 6 rows (observations)."
     assert weather_df.shape[1] == 6, "Dataframe should have 6 columns."
 
 
