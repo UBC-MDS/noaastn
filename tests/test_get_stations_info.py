@@ -1,8 +1,8 @@
 import pytest
-from noaastn import __version__, noaastn
+from noaastn import noaastn
 from pandas.api.types import is_datetime64_any_dtype as is_datetime
 
-get_stations_info_params = [("all", [29560, 253]), ("US", [7157, 1])]
+get_stations_info_params = [("all", [29561, 253]), ("US", [7158, 1])]
 invalid_params = ["XXX", 12]
 num_column = 11
 

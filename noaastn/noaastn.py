@@ -2,7 +2,7 @@ import gzip
 import io
 import os
 import re
-from ftplib import FTP
+from ftplib import FTP, error_perm
 
 import altair as alt
 import numpy as np
@@ -12,19 +12,18 @@ import pandas as pd
 def get_stations_info(country="all"):
     """
     Downloads and cleans the data of all stations available at
-    'ftp://ftp.ncei.noaa.gov/pub/data/noaa/'.
+    ftp://ftp.ncei.noaa.gov/pub/data/noaa/.
 
     Parameters
     ----------
     country : str, optional
         Filters station information by country location that is represented by
-        two character country code("US") or "all" for every country, by default "all".
-
+        two character country code("US") or "all" for every country, by default
+         "all".
     Returns
     -------
     pandas.DataFrame
         Data frame containing information of all stations.
-
     Examples
     --------
     >>> get_stations_info(country="US")
@@ -67,9 +66,11 @@ def get_stations_info(country="all"):
             if i <= skip_lines:
                 continue
             for i in range(len(col_index) - 1):
-                val = line[col_index[i] : col_index[i + 1]].strip()
+                val = line[col_index[i]: col_index[i + 1]].strip()
                 if len(val) > 0:
-                    data[i].append(line[col_index[i] : col_index[i + 1]].strip())
+                    data[i].append(
+                        line[col_index[i]: col_index[i + 1]].strip()
+                    )
                 else:
                     data[i].append(None)
 
@@ -98,7 +99,8 @@ def get_weather_data(station_number, year):
     Returns a dataframe containing a time series of air temperature (degrees
     Celsius), atmospheric pressure (hectopascals), wind speed (m/s), and wind
     direction (angular degrees). Also saves a copy of the raw data file
-    downloaded from the NOAA FTP server at 'ftp.ncei.noaa.gov/pub/data/noaa/'.
+    downloaded from the NOAA FTP server at
+    ftp://ftp.ncei.noaa.gov/pub/data/noaa/.
 
     Parameters
     ----------
@@ -106,7 +108,6 @@ def get_weather_data(station_number, year):
         NOAA station number.
     year : int
         Year for which weather data should be returned
-
     Notes
     -----
         `station_number` is a combination of the USAF station ID and the NCDC
@@ -114,27 +115,26 @@ def get_weather_data(station_number, year):
         exist, a value of '99999' should be used in its place.
         Example with WBAN ID - '911650-22536'
         Example without WBAN ID - '010015-99999'
-
         Station numbers can be found in the dataframe returned by
         `get_stations_info()` or through the NOAA's graphical tool at
         https://gis.ncdc.noaa.gov/maps/ncei/cdo/hourly
-
     Returns
     -------
     observations_df : pandas.DataFrame
         A dataframe that contains a time series of weather station
         observations.
-
     Examples
     --------
     >>> get_weather_data('911650-22536', 2020)
     """
 
     assert type(year) == int, "Year must be entered as an integer"
-    assert type(station_number) == str, "Station number must be entered as a string"
+    assert (
+        type(station_number) == str
+    ), "Station number must be entered as a string"
     assert re.match(
         "^[0-9]{6}[-][0-9]{5}$", station_number
-    ), 'Station number must be entered in form "911650-22536".  See documentation for additional details.'
+    ), 'Station number must be entered in form "911650-22536".'
 
     # Generate filename based on selected station number and year and download
     # data from NOAA FTP site.
@@ -150,10 +150,13 @@ def get_weather_data(station_number, year):
         noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
     except error_perm as e_mess:
         if re.search("(No such file or directory)", str(e_mess)):
-            print("Data not available for that station number / year combination")
+            print(
+                "Data not available for that station number / year combination"
+            )
         else:
-            print("Error generated from NOAA FTP site: \n")
+            print("Error generated from NOAA FTP site: \n", e_mess)
         noaa_ftp.quit()
+        return
 
     noaa_ftp.quit()
 
@@ -162,7 +165,14 @@ def get_weather_data(station_number, year):
     # ftp://ftp.ncei.noaa.gov/pub/data/noaa/isd-format-document.pdf
     compressed_data.seek(0)
     stn_year_df = pd.DataFrame(
-        columns=["stn", "datetime", "air_temp", "atm_press", "wind_spd", "wind_dir"]
+        columns=[
+            "stn",
+            "datetime",
+            "air_temp",
+            "atm_press",
+            "wind_spd",
+            "wind_dir",
+        ]
     )
     with gzip.open(compressed_data, mode="rt") as stn_data:
         for i, line in enumerate(stn_data):
@@ -173,7 +183,9 @@ def get_weather_data(station_number, year):
             stn_year_df.loc[i, "wind_dir"] = float(line[60:63])
 
     # Replace missing value indicators with NaNs
-    stn_year_df = stn_year_df.replace([999, 999.9, 9999.9], [np.nan, np.nan, np.nan])
+    stn_year_df = stn_year_df.replace(
+        [999, 999.9, 9999.9], [np.nan, np.nan, np.nan]
+    )
 
     stn_year_df.loc[:, "stn"] = station_number
     return stn_year_df
@@ -183,6 +195,7 @@ def plot_weather_data(obs_df, col_name, time_basis):
     """
     Visualizes the weather station observations including air temperature,
     atmospheric pressure, wind speed, and wind direction changing over time.
+
     Parameters
     ----------
     obs_df : pandas.DataFrame
@@ -192,10 +205,11 @@ def plot_weather_data(obs_df, col_name, time_basis):
         Variables that users would like to plot on a timely basis,
         including 'air_temp', 'atm_press', 'wind_spd', 'wind_dir'
     time_basis : str
-        The users can choose to plot the observations on 'monthly' or 'daily basis'
+        The users can choose to plot the observations on 'monthly' or
+        'daily basis'
     Returns
     -------
-    plot : `altair`
+    altair.vegalite.v4.api.Chart
         A plot can visualize the changing of observation on the timely basis
         that user chooses.
     Examples
@@ -216,7 +230,10 @@ def plot_weather_data(obs_df, col_name, time_basis):
         "wind_spd",
         "wind_dir",
     ], "Variable can only be one of air_temp, atm_press, wind_spd or wind_dir"
-    assert time_basis in ["monthly", "daily"], "Time basis can only be monthly or daily"
+    assert time_basis in [
+        "monthly",
+        "daily",
+    ], "Time basis can only be monthly or daily"
 
     df = obs_df.dropna()
     assert (
@@ -236,10 +253,14 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 .mark_line(color="orange")
                 .encode(
                     alt.X(
-                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                        "month(datetime)",
+                        title="Month",
+                        axis=alt.Axis(labelAngle=-30),
                     ),
                     alt.Y(
-                        "air_temp", title="Air Temperature", scale=alt.Scale(zero=False)
+                        "air_temp",
+                        title="Air Temperature",
+                        scale=alt.Scale(zero=False),
                     ),
                     alt.Tooltip(col_name),
                 )
@@ -250,7 +271,9 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 .mark_line(color="orange")
                 .encode(
                     alt.X(
-                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                        "month(datetime)",
+                        title="Month",
+                        axis=alt.Axis(labelAngle=-30),
                     ),
                     alt.Y(
                         "atm_press",
@@ -266,9 +289,15 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 .mark_line(color="orange")
                 .encode(
                     alt.X(
-                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                        "month(datetime)",
+                        title="Month",
+                        axis=alt.Axis(labelAngle=-30),
                     ),
-                    alt.Y("wind_spd", title="Wind Speed", scale=alt.Scale(zero=False)),
+                    alt.Y(
+                        "wind_spd",
+                        title="Wind Speed",
+                        scale=alt.Scale(zero=False),
+                    ),
                     alt.Tooltip(col_name),
                 )
             )
@@ -278,10 +307,14 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 .mark_line(color="orange")
                 .encode(
                     alt.X(
-                        "month(datetime)", title="Month", axis=alt.Axis(labelAngle=-30)
+                        "month(datetime)",
+                        title="Month",
+                        axis=alt.Axis(labelAngle=-30),
                     ),
                     alt.Y(
-                        "wind_dir", title="Wind Direction", scale=alt.Scale(zero=False)
+                        "wind_dir",
+                        title="Wind Direction",
+                        scale=alt.Scale(zero=False),
                     ),
                     alt.Tooltip(col_name),
                 )
@@ -298,9 +331,13 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 alt.Chart(df, title="Air Temperature for " + str(year))
                 .mark_line(color="orange")
                 .encode(
-                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.X(
+                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
+                    ),
                     alt.Y(
-                        "air_temp", title="Air Temperature", scale=alt.Scale(zero=False)
+                        "air_temp",
+                        title="Air Temperature",
+                        scale=alt.Scale(zero=False),
                     ),
                     alt.Tooltip(col_name),
                 )
@@ -310,7 +347,9 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 alt.Chart(df, title="Atmospheric Pressure for " + str(year))
                 .mark_line(color="orange")
                 .encode(
-                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.X(
+                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
+                    ),
                     alt.Y(
                         "atm_press",
                         title="Atmospheric Pressure",
@@ -324,8 +363,14 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 alt.Chart(df, title="Wind Speed for " + str(year))
                 .mark_line(color="orange")
                 .encode(
-                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
-                    alt.Y("wind_spd", title="Wind Speed", scale=alt.Scale(zero=False)),
+                    alt.X(
+                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
+                    ),
+                    alt.Y(
+                        "wind_spd",
+                        title="Wind Speed",
+                        scale=alt.Scale(zero=False),
+                    ),
                     alt.Tooltip(col_name),
                 )
             )
@@ -334,9 +379,13 @@ def plot_weather_data(obs_df, col_name, time_basis):
                 alt.Chart(df, title="Wind Direction for " + str(year))
                 .mark_line(color="orange")
                 .encode(
-                    alt.X("datetime", title="Date", axis=alt.Axis(labelAngle=-30)),
+                    alt.X(
+                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
+                    ),
                     alt.Y(
-                        "wind_dir", title="Wind Direction", scale=alt.Scale(zero=False)
+                        "wind_dir",
+                        title="Wind Direction",
+                        scale=alt.Scale(zero=False),
                     ),
                     alt.Tooltip(col_name),
                 )
