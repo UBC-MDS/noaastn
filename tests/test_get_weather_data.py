@@ -44,3 +44,10 @@ def test_station_number_coding():
     assert (
         weather_df.stn.unique()[0] == station_number
     ), "Station number should match entries values in stn column"
+
+
+def test_ftp_error_handling():
+    assert (
+        noaastn.get_weather_data("999999-99999", 1750) == "FTP Error"
+    ), """Entry of invalid station/year combination should return string
+    'FTP error'."""
