@@ -103,9 +103,8 @@ def get_weather_data(station_number, year):
     Loads and cleans weather data for a given NOAA station ID and year.
     Returns a dataframe containing a time series of air temperature (degrees
     Celsius), atmospheric pressure (hectopascals), wind speed (m/s), and wind
-    direction (angular degrees). Also saves a copy of the raw data file
-    downloaded from the NOAA FTP server at
-    ftp://ftp.ncei.noaa.gov/pub/data/noaa/.
+    direction (angular degrees). The raw data file is downloaded from the NOAA 
+    FTP server at ftp://ftp.ncei.noaa.gov/pub/data/noaa/.
 
     Parameters
     ----------
