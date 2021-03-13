@@ -44,8 +44,10 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 
 Typical usage will begin with downloading the list of available weather stations in the country of interest using the `get_stations_info()` function.  A dataframe is returned which can be reviewed to find a suitable station in the area of interest.  Alternatively, the NOAA provides a [graphical interface](https://gis.ncdc.noaa.gov/maps/ncei/cdo/hourly) for exploring the available weather stations.
 
+```
 >>> from noaastn import noaastn
 >>> noaastn.get_stations_info(country = "US")
+```
 
 ![Tabular output from get_stations_info function](img/get_stations_info.png)
 
@@ -56,14 +58,18 @@ After selecting a weather station number, the `get_weather_data()` function can 
 - wind speed (m/s)
 - wind direction (angular degrees)
 
+```
 >>> weather_data = noaastn.get_weather_data("911650-22536", 2020)
 >>> print(weather_data)
+```
 
 ![Tabular output from get_weather_data function](img/get_weather_data.png)
 
 The function `plot_weather_data()` can be used to visualize a time series of any of the available weather parameters either on a mean daily or mean monthly basis.  The function returns an Altair chart object which can be saved or displayed in any environment which can render Altair objects.
 
+```
 >>> noaastn.plot_weather_data(weather_data, col_name="air_temp", time_basis="monthly")
+```
 
 ![Altair chart with time series of air temperature](img/plot_weather_data.png)
 
