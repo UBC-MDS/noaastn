@@ -49,7 +49,7 @@ Typical usage will begin with downloading the list of available weather stations
 >>> noaastn.get_stations_info(country = "US")
 ```
 
-![Tabular output from get_stations_info function](img/get_stations_info.png)
+![Tabular output from get_stations_info function](https://raw.githubusercontent.com/UBC-MDS/noaastn/main/img/get_stations_info.png)
 
 After selecting a weather station number, the `get_weather_data()` function can be used to download various weather parameters for the station number and year of interest.  The following usage example downloads weather data from station number "911650-22536" for the year 2020 and saves the data to a variable called 'weather_data'.  'weather_data' will be a data frame containing a time series of the following parameters for the station and year of interest:
 
@@ -63,7 +63,7 @@ After selecting a weather station number, the `get_weather_data()` function can 
 >>> print(weather_data)
 ```
 
-![Tabular output from get_weather_data function](img/get_weather_data.png)
+![Tabular output from get_weather_data function](https://raw.githubusercontent.com/UBC-MDS/noaastn/main/img/get_weather_data.png)
 
 The function `plot_weather_data()` can be used to visualize a time series of any of the available weather parameters either on a mean daily or mean monthly basis.  The function returns an Altair chart object which can be saved or displayed in any environment which can render Altair objects.
 
@@ -71,7 +71,7 @@ The function `plot_weather_data()` can be used to visualize a time series of any
 >>> noaastn.plot_weather_data(weather_data, col_name="air_temp", time_basis="monthly")
 ```
 
-![Altair chart with time series of air temperature](img/plot_weather_data.png)
+![Altair chart with time series of air temperature](https://raw.githubusercontent.com/UBC-MDS/noaastn/main/img/plot_weather_data.png)
 
 ## Documentation
 
