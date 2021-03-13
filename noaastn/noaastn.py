@@ -19,7 +19,7 @@ def get_stations_info(country="all"):
     country : str, optional
         Filters station information by country location that is represented by
         two character country code("US") or "all" for every country, by default
-         "all".
+        "all".
     Returns
     -------
     pandas.DataFrame
@@ -28,6 +28,15 @@ def get_stations_info(country="all"):
     --------
     >>> get_stations_info(country="US")
     """
+
+    if not isinstance(country, str):
+        raise Exception(
+            "Invalid country parameter. parameter should be a string"
+        )
+    elif country != "all" and len(country) != 2:
+        raise Exception(
+            "Invalid country parameter. parameter should be length 2"
+        )
 
     # Get station info file from the ftp site
     ftp_address = "ftp.ncei.noaa.gov"
@@ -84,11 +93,7 @@ def get_stations_info(country="all"):
 
     # filter if the country parameter is valid
     if country != "all":
-        print(len(country), len(country) != 2)
-        if len(country) != 2 or not isinstance(country, str):
-            raise Exception("Invalid country parameter")
-        else:
-            data_df = data_df[data_df["country"] == country]
+        data_df = data_df[data_df["country"] == country]
 
     return data_df
 
