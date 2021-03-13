@@ -103,9 +103,8 @@ def get_weather_data(station_number, year):
     Loads and cleans weather data for a given NOAA station ID and year.
     Returns a dataframe containing a time series of air temperature (degrees
     Celsius), atmospheric pressure (hectopascals), wind speed (m/s), and wind
-    direction (angular degrees). Also saves a copy of the raw data file
-    downloaded from the NOAA FTP server at
-    ftp://ftp.ncei.noaa.gov/pub/data/noaa/.
+    direction (angular degrees). The raw data file is downloaded from the NOAA
+    FTP server at ftp://ftp.ncei.noaa.gov/pub/data/noaa/.
 
     Parameters
     ----------
@@ -145,23 +144,17 @@ def get_weather_data(station_number, year):
     # data from NOAA FTP site.
     filename = station_number + "-" + str(year) + ".gz"
 
-    noaa_ftp = FTP("ftp.ncei.noaa.gov")
-    noaa_ftp.login()  # Log in (no user name or password required)
-    noaa_ftp.cwd("pub/data/noaa/" + str(year) + "/")
-
     compressed_data = io.BytesIO()
 
     try:
+        noaa_ftp = FTP("ftp.ncei.noaa.gov")
+        noaa_ftp.login()  # Log in (no user name or password required)
+        noaa_ftp.cwd("pub/data/noaa/" + str(year) + "/")
         noaa_ftp.retrbinary("RETR " + filename, compressed_data.write)
     except error_perm as e_mess:
-        if re.search("(No such file or directory)", str(e_mess)):
-            print(
-                "Data not available for that station number / year combination"
-            )
-        else:
-            print("Error generated from NOAA FTP site: \n", e_mess)
+        print("Error generated from NOAA FTP site: \n", e_mess)
         noaa_ftp.quit()
-        return
+        return 'FTP Error'
 
     noaa_ftp.quit()
 
