@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "Python package that downloads, processes and visualizes weather data from NOAA website."
 authors = ["Chen Zhao, Chirag Rank, Steffen Pentelow"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ubc-MDS/noaastn"
+repository = "https://github.com/ubc-MDS/noaastn"
+documentation = 'https://noaastn.readthedocs.io/en/latest'
 
 [tool.poetry.dependencies]
 python = "^3.8"
