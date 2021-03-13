@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "noaastn"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python package that downloads, processes and visualizes weather data from NOAA website."
 authors = ["Chen Zhao, Chirag Rank, Steffen Pentelow"]
 license = "MIT"
