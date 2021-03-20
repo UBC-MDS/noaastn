@@ -12,7 +12,7 @@ To install noaastn, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install -u noaastn
+    $ pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple noaastn
 
 This is the preferred method to install noaastn, as it will always install the most recent stable release.
 
