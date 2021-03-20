@@ -9,6 +9,12 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 - Wind Speed (m/s)
 - Wind Direction (angular degrees)
 
+## Installation
+This package can be installed from TestPyPI by running the following command in a terminal
+
+```bash
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple noaastn
+```
 ## Features
 
 - `get_stations_info`:
@@ -20,21 +26,9 @@ The US National Oceanic and Atmospheric Administration (NOAA) collects and provi
 
 ## Dependencies
 
-[tool.poetry.dependencies]
-
-- python = "^3.8"
-- pandas = "^1.2.3"
-- altair = "^4.1.0"
-
-[tool.poetry.dev-dependencies]
-
-- pytest = "^6.2.2"
-- pytest-cov = "^2.11.1"
-- codecov = "^2.1.11"
-- python-semantic-release = "^7.15.0"
-- flake8 = "^3.8.4"
-- Sphinx = "^3.5.1"
-- sphinxcontrib-napoleon = "^0.7"
+The list of the dependencies for this package can be viewed under
+`[tool.poetry.dependencies]` at
+[DESCRIPTION](https://github.com/UBC-MDS/noaastn/blob/main/pyproject.toml)
 
 ## Related Packages
 
