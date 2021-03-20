@@ -27,8 +27,8 @@ pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://
 ## Dependencies
 
 The list of the dependencies for this package can be viewed under
-`[tool.poetry.dependencies]` at
-[DESCRIPTION](https://github.com/UBC-MDS/noaastn/blob/main/pyproject.toml)
+`[tool.poetry.dependencies]` in 
+[pyproject.toml](https://github.com/UBC-MDS/noaastn/blob/main/pyproject.toml)
 
 ## Related Packages
 
