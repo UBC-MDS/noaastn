@@ -154,7 +154,7 @@ def get_weather_data(station_number, year):
     except error_perm as e_mess:
         print("Error generated from NOAA FTP site: \n", e_mess)
         noaa_ftp.quit()
-        return 'FTP Error'
+        return
 
     noaa_ftp.quit()
 
