@@ -49,5 +49,5 @@ def test_station_number_coding():
 def test_ftp_error_handling():
     assert (
         not noaastn.get_weather_data("999999-99999", 1750)
-    ), """Entry of invalid station/year combination should not return 
+    ), """Entry of invalid station/year combination should not return
     anything."""
