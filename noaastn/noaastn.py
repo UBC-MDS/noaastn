@@ -137,7 +137,7 @@ def get_weather_data(station_number, year):
         type(station_number) == str
     ), "Station number must be entered as a string"
     assert re.match(
-        "^[0-9]{6}[-][0-9]{5}$", station_number
+        "^[A-z|0-9][0-9]{5}[-][0-9]{5}$", station_number
     ), 'Station number must be entered in form "911650-22536".'
 
     # Generate filename based on selected station number and year and download
@@ -154,7 +154,7 @@ def get_weather_data(station_number, year):
     except error_perm as e_mess:
         print("Error generated from NOAA FTP site: \n", e_mess)
         noaa_ftp.quit()
-        return 'FTP Error'
+        return
 
     noaa_ftp.quit()
 

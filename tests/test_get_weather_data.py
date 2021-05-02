@@ -48,6 +48,6 @@ def test_station_number_coding():
 
 def test_ftp_error_handling():
     assert (
-        noaastn.get_weather_data("999999-99999", 1750) == "FTP Error"
-    ), """Entry of invalid station/year combination should return string
-    'FTP error'."""
+        not noaastn.get_weather_data("999999-99999", 1750)
+    ), """Entry of invalid station/year combination should not return
+    anything."""
