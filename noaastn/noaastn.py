@@ -189,7 +189,7 @@ def get_weather_data(station_number, year):
     return stn_year_df
 
 
-def plot_weather_data(obs_df, col_name, time_basis):
+def plot_weather_data(obs_df, col_name="air_temp", time_basis="monthly"):
     """
     Visualizes the weather station observations including air temperature,
     atmospheric pressure, wind speed, and wind direction changing over time.
@@ -198,13 +198,14 @@ def plot_weather_data(obs_df, col_name, time_basis):
     ----------
     obs_df : pandas.DataFrame
         A dataframe that contains a time series of weather station
-        observations.
+        observations. It can be imported from the output of
+        `get_weather_data()` function.
     col_name : str
         Variables that users would like to plot on a timely basis,
         including 'air_temp', 'atm_press', 'wind_spd', 'wind_dir'
     time_basis : str
         The users can choose to plot the observations on 'monthly' or
-        'daily basis'
+        'daily' basis
     Returns
     -------
     altair.vegalite.v4.api.Chart
@@ -239,84 +240,34 @@ def plot_weather_data(obs_df, col_name, time_basis):
     ), "Dataset is not sufficient to visualize"  # Test edge cases
     year = df.datetime.dt.year[0]
 
+    title_dic = {"air_temp": "Air Temperature",
+                 "atm_press": "Atmospheric Pressure",
+                 "wind_spd": "Wind Speed",
+                 "wind_dir": "Wind Direction"}
+
     if time_basis == "monthly":
         df = df.set_index("datetime").resample("M").mean().reset_index()
         assert (
             len(df.index) > 2
         ), "Dataset is not sufficient to visualize"  # Test edge cases
 
-        if col_name == "air_temp":
-            line = (
-                alt.Chart(df, title="Air Temperature for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "month(datetime)",
-                        title="Month",
-                        axis=alt.Axis(labelAngle=-30),
-                    ),
-                    alt.Y(
-                        "air_temp",
-                        title="Air Temperature",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
+        line = (
+            alt.Chart(df, title=title_dic[col_name] + " for " + str(year))
+            .mark_line(color="orange")
+            .encode(
+                alt.X(
+                    "month(datetime)",
+                    title="Month",
+                    axis=alt.Axis(labelAngle=-30),
+                ),
+                alt.Y(
+                    col_name,
+                    title=title_dic[col_name],
+                    scale=alt.Scale(zero=False),
+                ),
+                alt.Tooltip(col_name),
             )
-        elif col_name == "atm_press":
-            line = (
-                alt.Chart(df, title="Atmospheric Pressure for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "month(datetime)",
-                        title="Month",
-                        axis=alt.Axis(labelAngle=-30),
-                    ),
-                    alt.Y(
-                        "atm_press",
-                        title="Atmospheric Pressure",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
-            )
-        elif col_name == "wind_spd":
-            line = (
-                alt.Chart(df, title="Wind Speed for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "month(datetime)",
-                        title="Month",
-                        axis=alt.Axis(labelAngle=-30),
-                    ),
-                    alt.Y(
-                        "wind_spd",
-                        title="Wind Speed",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
-            )
-        else:
-            line = (
-                alt.Chart(df, title="Wind Direction for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "month(datetime)",
-                        title="Month",
-                        axis=alt.Axis(labelAngle=-30),
-                    ),
-                    alt.Y(
-                        "wind_dir",
-                        title="Wind Direction",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
-            )
+        )
 
     else:
         df = df.set_index("datetime").resample("D").mean().reset_index()
@@ -324,70 +275,22 @@ def plot_weather_data(obs_df, col_name, time_basis):
             len(df.index) > 2
         ), "Dataset is not sufficient to visualize"  # Test edge cases
 
-        if col_name == "air_temp":
-            line = (
-                alt.Chart(df, title="Air Temperature for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
-                    ),
-                    alt.Y(
-                        "air_temp",
-                        title="Air Temperature",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
+        line = (
+            alt.Chart(df, title=title_dic[col_name] + " for " + str(year))
+            .mark_line(color="orange")
+            .encode(
+                alt.X(
+                    "datetime", title="Date",
+                    axis=alt.Axis(labelAngle=-30, format=("%b"))
+                ),
+                alt.Y(
+                    col_name,
+                    title=title_dic[col_name],
+                    scale=alt.Scale(zero=False),
+                ),
+                alt.Tooltip(col_name),
             )
-        elif col_name == "atm_press":
-            line = (
-                alt.Chart(df, title="Atmospheric Pressure for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
-                    ),
-                    alt.Y(
-                        "atm_press",
-                        title="Atmospheric Pressure",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
-            )
-        elif col_name == "wind_spd":
-            line = (
-                alt.Chart(df, title="Wind Speed for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
-                    ),
-                    alt.Y(
-                        "wind_spd",
-                        title="Wind Speed",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
-            )
-        else:
-            line = (
-                alt.Chart(df, title="Wind Direction for " + str(year))
-                .mark_line(color="orange")
-                .encode(
-                    alt.X(
-                        "datetime", title="Date", axis=alt.Axis(labelAngle=-30)
-                    ),
-                    alt.Y(
-                        "wind_dir",
-                        title="Wind Direction",
-                        scale=alt.Scale(zero=False),
-                    ),
-                    alt.Tooltip(col_name),
-                )
-            )
+        )
 
     chart = (
         line.properties(width=500, height=350)
